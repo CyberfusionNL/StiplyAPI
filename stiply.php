@@ -12,7 +12,7 @@ namespace stiply;
 class stiply
 {
 
-    public $Username, $Password;
+    private $Username, $Password;
     public $data;
 
     /**
