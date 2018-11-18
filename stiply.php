@@ -13,7 +13,7 @@ class stiply
 {
 
     private $username, $password;
-    public $data;
+    private $data;
 
     /**
      * stiply constructor.
