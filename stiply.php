@@ -12,7 +12,7 @@ namespace stiply;
 class stiply
 {
 
-    private $Username, $Password;
+    private $username, $password;
     public $data;
 
     /**
@@ -21,8 +21,8 @@ class stiply
      */
     public function __construct(array $user)
     {
-        $this->Username = $user['username'];
-        $this->Password = $user['password'];
+        $this->username = $user['username'];
+        $this->password = $user['password'];
     }
 
     /**
@@ -54,7 +54,7 @@ class stiply
         $ch = curl_init();
 
         $headers = array(
-            'Authorization: Basic ' . base64_encode($this->Username . ":" . $this->Password),
+            'Authorization: Basic ' . base64_encode($this->username . ":" . $this->password),
             'Cache-Control: no-cache'
         );
 
@@ -152,9 +152,9 @@ class stiply
      * @param string $extKey
      * @return bool
      */
-    public function getSignRequestKeyFromExtKey(string $extKey)
+    public function getSignRequestKeyFromExtKey(string $ext_key)
     {
-        $key = $this->executeRequest("/sign_requests/" . $extKey . "/actions/get_sign_request_key");
+        $key = $this->executeRequest("/sign_requests/" . $ext_key . "/actions/get_sign_request_key");
         if ($key['status_code'] == 200) {
             return $key['key'];
         }
