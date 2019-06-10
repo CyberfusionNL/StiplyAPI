@@ -12,8 +12,8 @@ namespace Cyberfusion;
 class Stiply
 {
 
-    public $username, $password;
-    public $data;
+    private $username, $password;
+    private $data;
 
     /**
      * Stiply constructor.

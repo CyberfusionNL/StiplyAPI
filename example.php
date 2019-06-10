@@ -30,7 +30,7 @@ $signers = [
     1 => [
         'signer_email' => strip_tags(trim("customer@client.nl")),
         'signer_signature_fields' => [['name' => 'signature_1']],
-        'signer_text_fields' => [['name' => 'text_1'], ['name' => 'datum_1']]
+        'signer_text_fields' => [['name' => 'text_1'], ['name' => 'datum_1']] // As per the document
     ],
 ];
 
