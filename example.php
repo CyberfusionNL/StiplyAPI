@@ -7,12 +7,12 @@
  */
 require('stiply.php');
 
-use stiply\stiply;
+use Cyberfusion\Stiply;
 
 $user = array();
 $user['username'] = 'ywatchman@cyberfusion.nl';
 $user['password'] = 'SuperSecretFromOurBase';
-$stiply = new stiply($user);
+$stiply = new Stiply($user);
 
 $data = array(
     'file' => new CURLFile("contract.pdf"),

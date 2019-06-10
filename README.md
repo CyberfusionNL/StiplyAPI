@@ -6,12 +6,12 @@ Easy to use API wrapper for Stiply, create sign requests, add signers.
 
     <?php
     require_once('stiply.php');
-    use stiply\stiply;
+    use Cyberfusion\Stiply;
     
     $user = array();
     $user['username'] = 'ywatchman@cyberfusion.nl';
     $user['password'] = 'SuperSecretFromOurBase';
-    $stiply = new stiply($user);
+    $stiply = new Stiply($user);
     
 #### Creating a sign request
     

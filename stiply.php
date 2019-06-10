@@ -6,23 +6,23 @@
  * Time: 10:37
  */
 
-namespace stiply;
+namespace Cyberfusion;
 
 
-class stiply
+class Stiply
 {
 
-    public $Username, $Password;
+    public $username, $password;
     public $data;
 
     /**
-     * stiply constructor.
+     * Stiply constructor.
      * @param array $user
      */
     public function __construct(array $user)
     {
-        $this->Username = $user['username'];
-        $this->Password = $user['password'];
+        $this->username = $user['username'];
+        $this->password = $user['password'];
     }
 
     /**
@@ -49,12 +49,12 @@ class stiply
      * @param array $eHeaders
      * @return mixed
      */
-    public function executeRequest($endpoint, $type, array $eHeaders = null)
+    public function executeRequest($endpoint, $type = "GET", array $eHeaders = null)
     {
         $ch = curl_init();
 
         $headers = array(
-            'Authorization: Basic ' . base64_encode($this->Username . ":" . $this->Password),
+            'Authorization: Basic ' . base64_encode($this->username . ":" . $this->password),
             'Cache-Control: no-cache'
         );
 
@@ -81,9 +81,10 @@ class stiply
 
     /**
      * Create a document sign request
-     * @param $data
+     * @param array $data
      * @param $type
      * @param $name
+     * @param $signers
      * @param array $eHeaders
      * @return bool
      */
@@ -111,10 +112,8 @@ class stiply
      */
     public function cancelSignRequest($key)
     {
-        if ($this->executeRequest("/sign_requests/" . $key, "DELETE")['status_code'] == 200) {
-            return true;
-        }
-        return false;
+        $res = $this->executeRequest("/sign_requests/" . $key, "DELETE");
+        return $res['status_code'] === 200;
     }
 
 
@@ -123,28 +122,34 @@ class stiply
      *
      * @param string|null $key
      * @param string|null $extKey
-     * @return bool
+     * @return int
      *
      */
-    public function sendReminder(string $key = null, string $extKey = null)
+    public function sendReminder($key = null, $extKey = null)
     {
         if (isset($key)) {
-            if ($this->executeRequest("/sign_requests/" . $key . "/actions/send_reminder")['status_code'] == 200) {
-                return true;
+            $req = $this->executeRequest("/sign_requests/" . $key . "/actions/send_reminder");
+            if ($req['status_code'] == 200) {
+                return 1;
+            } elseif($req['status_code'] == '400') {
+                return 0;
+            } elseif ($req['status_code'] == '403') {
+                return 3;
             }
-//            Todo: Error handling 403 & 400
-            return false;
         } elseif (isset($extKey)) {
             if ($this->getSignRequestKeyFromExtKey($extKey) != false) {
                 $key = $this->getSignRequestKeyFromExtKey($extKey);
-                if ($this->executeRequest("/sign_requests/" . $key . "/actions/send_reminder")['status_code'] == 200) {
-                    return true;
+                $request = $this->executeRequest("/sign_requests/" . $key . "/actions/send_reminder");
+                if ($request['status_code'] == 200) {
+                    return 1;
+                } elseif($request['status_code'] == 403) {
+                    return 3;
+                } elseif ($request['status_code'] == 400) {
+                    return 0;
                 }
-//            Todo: Error handling 403 & 400
-                return false;
             }
         }
-        return false;
+        return 2;
     }
 
     /**
@@ -152,7 +157,7 @@ class stiply
      * @param string $extKey
      * @return bool
      */
-    public function getSignRequestKeyFromExtKey(string $extKey)
+    public function getSignRequestKeyFromExtKey($extKey)
     {
         $key = $this->executeRequest("/sign_requests/" . $extKey . "/actions/get_sign_request_key");
         if ($key['status_code'] == 200) {
@@ -164,7 +169,7 @@ class stiply
     /**
      * Add a signer
      * @param $key
-     * @param null $signers
+     * @param array|null $signers
      * @return bool|mixed
      */
     public function addSigner($key, array $signers = null)
